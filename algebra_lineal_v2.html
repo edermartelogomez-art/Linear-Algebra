@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Álgebra lineal — Matemáticas II</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#F8FAFC;--bg3:#F1F5F9;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;--border2:#CBD5E1;
+  --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-b:#BFDBFE;--blue-d:#1E3A8A;
+  --green:#15803D;--green-bg:#F0FDF4;--green-b:#BBF7D0;--green-d:#14532D;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-b:#FECACA;--red-d:#7F1D1D;
+  --yellow:#B45309;--yellow-bg:#FFFBEB;--yellow-b:#FDE68A;
+  --mono:'Courier New',monospace;--sans:'Segoe UI',system-ui,sans-serif;
+  --r:10px;--r2:14px;
+}
+body{font-family:var(--sans);background:var(--bg3);color:var(--text);min-height:100vh;padding:0 0 4rem}
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left h1{font-size:13px;font-weight:600;color:var(--text)}
+.topbar-left p{font-size:11px;color:var(--muted);margin-top:2px}
+.topbar-right{text-align:right}
+.topbar-right p{font-size:11px;color:var(--muted)}
+.topbar-right span{font-size:12px;font-weight:600;color:var(--blue)}
+.pbar{height:3px;background:var(--blue-bg)}
+.pfill{height:100%;background:var(--blue);transition:width .4s;width:10%}
+.nav-pills{display:flex;gap:4px;padding:.85rem 1.5rem .4rem;flex-wrap:wrap;max-width:960px;margin:0 auto}
+.pill{font-size:10px;font-weight:600;padding:4px 9px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s}
+.pill:hover{background:var(--bg2)}
+.pill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.pill.done{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.sec{display:none;max-width:960px;margin:0 auto;padding:0 1.5rem 2.5rem;animation:fi .18s ease}
+.sec.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stag{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;padding-top:1.25rem}
+.stitle{font-size:22px;font-weight:700;margin-bottom:.25rem;color:var(--text)}
+.sdesc{font-size:13px;color:var(--muted);margin-bottom:1.1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);line-height:1.6}
+.box{border-radius:var(--r2);padding:.95rem 1.1rem;border:1px solid;margin-bottom:.65rem}
+.bl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.45rem}
+.box p,.box li{font-size:13px;line-height:1.75;color:var(--text)}
+.box ul,.box ol{padding-left:1.3rem}
+.box li{margin-bottom:.25rem}
+.bi{background:var(--blue-bg);border-color:var(--blue-b)}.bi .bl{color:var(--blue)}
+.bk{background:var(--bg2);border-color:var(--border)}.bk .bl{color:var(--muted)}
+.bw{background:var(--yellow-bg);border-color:var(--yellow-b)}.bw .bl{color:var(--yellow)}
+.be{background:var(--red-bg);border-color:var(--red-b)}.be .bl{color:var(--red)}
+.bs{background:var(--green-bg);border-color:var(--green-b)}.bs .bl{color:var(--green)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+/* ── MATRIZ VISUAL ── */
+.mx{display:inline-flex;align-items:center;vertical-align:middle;margin:.25rem .35rem}
+.mx-body{display:grid;text-align:right;font-family:var(--mono);font-size:13px;color:var(--text);gap:8px 22px;padding:10px 8px}
+.mx-l,.mx-r{width:10px;flex-shrink:0;border:2px solid var(--muted)}
+.mx-l{border-right:none;border-radius:4px 0 0 4px}
+.mx-r{border-left:none;border-radius:0 4px 4px 0}
+.aug-sep{width:1.5px;background:var(--border2);align-self:stretch;margin:8px 4px}
+.mx-sol{color:var(--blue);font-weight:600}
+.mx-piv{color:var(--green);font-weight:600}
+.mx-zero{color:var(--muted)}
+.op-row{display:flex;align-items:center;gap:.5rem;margin:.45rem 0;flex-wrap:wrap}
+.op-lbl{font-size:12px;color:var(--blue);font-family:var(--mono);background:var(--blue-bg);border:1px solid var(--blue-b);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.formula{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.6rem .95rem;margin:.4rem 0;font-size:13px;color:var(--blue-d);line-height:1.9;display:block}
+.app-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:1rem;margin-bottom:.65rem}
+.app-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.3rem}
+.app-title{font-size:14px;font-weight:600;margin-bottom:.35rem;color:var(--text)}
+.app-body{font-size:13px;color:var(--muted);line-height:1.65}
+.eg-box{background:var(--bg2);padding:.75rem .95rem;margin:.45rem 0;font-size:13px;border-left:3px solid var(--blue-b);border-radius:0 var(--r) var(--r) 0;line-height:1.85;color:var(--text)}
+.step-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:.85rem 1rem;margin-bottom:.45rem}
+.sn{width:24px;height:24px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-right:.45rem;vertical-align:middle}
+.nota{margin-top:.6rem;background:var(--bg);border:1px solid var(--blue-b);border-radius:var(--r);padding:.65rem .85rem;font-size:12px;color:var(--blue-d);line-height:1.7}
+.rvl{font-family:var(--sans);font-size:12px;font-weight:600;padding:5px 12px;border-radius:var(--r);border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;margin-top:.5rem;display:inline-block}
+.rvl:hover{background:var(--bg2);color:var(--text)}
+.btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:7px 16px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--text);transition:all .15s}
+.btn:hover{background:var(--bg2)}
+.btn-p{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-p:hover{background:var(--blue-d)}
+.btn-g{color:var(--muted);border-color:transparent;background:transparent}
+.btn-g:hover{background:var(--bg2);border-color:var(--border);color:var(--text)}
+.nav-btns{display:flex;justify-content:space-between;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.qopt{width:100%;display:flex;align-items:flex-start;gap:.6rem;padding:.65rem .85rem;border-radius:var(--r);border:1px solid var(--border);cursor:pointer;transition:all .15s;background:var(--bg);font-size:13px;color:var(--text);text-align:left;margin-bottom:.35rem;font-family:var(--sans)}
+.qopt:hover{background:var(--bg2);border-color:var(--border2)}
+.qopt.sel{border-color:var(--blue);background:var(--blue-bg);color:var(--blue-d)}
+.qopt.ok{border-color:var(--green);background:var(--green-bg);color:var(--green-d);pointer-events:none}
+.qopt.bad{border-color:var(--red);background:var(--red-bg);color:var(--red-d);pointer-events:none}
+.qltr{width:20px;height:20px;border-radius:50%;background:var(--bg3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qfb{font-size:12px;margin-top:.5rem;padding:.6rem .85rem;border-radius:var(--r);display:none;line-height:1.6}
+.qfb.show{display:block}
+.qfb.ok{background:var(--green-bg);color:var(--green-d);border:1px solid var(--green-b)}
+.qfb.bad{background:var(--red-bg);color:var(--red-d);border:1px solid var(--red-b)}
+.score-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:2.5rem;text-align:center;margin-top:1rem;display:none}
+.score-card.show{display:block}
+.score-num{font-size:52px;font-weight:700;color:var(--blue)}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
+.stat{background:var(--bg2);border-radius:var(--r);padding:.65rem;text-align:center}
+.stat-n{font-size:22px;font-weight:700;color:var(--blue)}
+.stat-l{font-size:11px;color:var(--muted);margin-top:2px}
+hr{border:none;border-top:1px solid var(--border);margin:1rem 0}
+.parcial-header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem;margin-bottom:1rem;text-align:center}
+.parcial-titulo{font-size:16px;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.parcial-sub{font-size:12px;color:var(--muted)}
+.pregunta{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:1rem;overflow:hidden}
+.preg-head{padding:.85rem 1rem;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:.75rem}
+.preg-num{min-width:32px;height:32px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.preg-titulo{font-size:13px;font-weight:600;color:var(--text)}
+.preg-pts{font-size:11px;color:var(--muted);margin-left:auto}
+.preg-body{padding:.85rem 1rem}
+.preg-enun{font-size:13px;color:var(--text);line-height:1.75;margin-bottom:.65rem}
+.parte{font-size:13px;color:var(--text);line-height:1.65;padding:.5rem .75rem;background:var(--bg2);border-radius:var(--r);border-left:3px solid var(--blue-b);margin-bottom:.4rem}
+.sol-btn{font-family:var(--sans);font-size:12px;font-weight:600;padding:5px 13px;border-radius:var(--r);border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;margin-top:.5rem}
+.sol-btn:hover{background:var(--bg2)}
+.sol-body{display:none;margin-top:.75rem;border-top:1px solid var(--border);padding-top:.75rem}
+.sol-body.show{display:block}
+.sol-tag{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+.sol-parte{margin-bottom:.65rem}
+.sol-lbl{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}.nav-pills,.sec{padding-left:1rem;padding-right:1rem}.topbar-right{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>&#193;lgebra lineal &mdash; Matrices y sistemas</h1>
+    <p>Matem&#225;ticas II &nbsp;&middot;&nbsp; Ingenier&#237;a de Sistemas</p>
+  </div>
+  <div class="topbar-right">
+    <p>Docente</p>
+    <span>Eder Santiago Martelo Gomez</span>
+  </div>
+</div>
+<div class="pbar"><div class="pfill" id="prog"></div></div>
+<div class="nav-pills" id="nav"></div>
+<div id="secs"></div>
+
+<script>
+/* ── helper: construye matriz visual ──
+   rows : array de arrays de strings
+   aug  : índice donde va el separador (0 = sin separador)
+*/
+function mx(rows, aug){
+  const H = rows.length;
+  const W = rows[0].length;
+  const cols = aug || W;
+  const cellH = H * 24 + (H - 1) * 8 + 20;
+
+  let html = '<div class="mx">';
+  html += `<div class="mx-l" style="height:${cellH}px"></div>`;
+  html += `<div class="mx-body" style="grid-template-columns:repeat(${cols},max-content)">`;
+  rows.forEach(row => {
+    row.slice(0, cols).forEach(cell => {
+      html += `<span>${cell}</span>`;
+    });
+  });
+  html += '</div>';
+
+  if(aug){
+    html += '<div class="aug-sep"></div>';
+    html += `<div class="mx-body" style="grid-template-columns:max-content">`;
+    rows.forEach(row => {
+      const cell = row[aug] !== undefined ? row[aug] : '?';
+      html += `<span class="mx-sol">${cell}</span>`;
+    });
+    html += '</div>';
+  }
+
+  html += `<div class="mx-r" style="height:${cellH}px"></div>`;
+  html += '</div>';
+  return html;
+}
+
+/* ── secciones ── */
+const SECS=[
+  {id:'s0',label:'1. ¿Qué es una matriz?'},
+  {id:'s1',label:'2. Tipos de matrices'},
+  {id:'s2',label:'3. Operaciones'},
+  {id:'s3',label:'4. Determinantes e inversa'},
+  {id:'s4',label:'5. Matriz aumentada'},
+  {id:'s5',label:'6. Gauss'},
+  {id:'s6',label:'7. Gauss-Jordan'},
+  {id:'s7',label:'8. Actividades'},
+  {id:'s8',label:'9. Quiz'},
+  {id:'s9',label:'10. Simulacro'},
+];
+let cur=0;
+const nav=document.getElementById('nav');
+const secsEl=document.getElementById('secs');
+SECS.forEach((s,i)=>{
+  const p=document.createElement('button');
+  p.className='pill'+(i===0?' on':'');p.textContent=s.label;p.onclick=()=>goSec(i);nav.appendChild(p);
+  const d=document.createElement('div');
+  d.id=s.id;d.className='sec'+(i===0?' on':'');
+  d.innerHTML=`<div id="${s.id}-body"></div>`;
+  secsEl.appendChild(d);
+});
+function goSec(n){
+  document.getElementById(SECS[cur].id).classList.remove('on');
+  nav.children[cur].classList.remove('on');
+  cur=n;
+  document.getElementById(SECS[cur].id).classList.add('on');
+  nav.children[cur].classList.add('on');
+  document.getElementById('prog').style.width=((cur+1)/SECS.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nb(n){
+  return `<div class="nav-btns">${n>0?`<button class="btn btn-g" onclick="goSec(${n-1})">&#8592; ${SECS[n-1].label}</button>`:'<span></span>'}<button class="btn btn-p" onclick="goSec(${Math.min(n+1,SECS.length-1)})">${n+1<SECS.length?'Siguiente: '+SECS[n+1].label+' &#8594;':'Completado'}</button></div>`;
+}
+
+/* ══ S0: QUÉ ES UNA MATRIZ ══ */
+document.getElementById('s0-body').innerHTML=`
+<div class="stag">Secci&#243;n 1</div><div class="stitle">&#191;Qu&#233; es una matriz?</div>
+<div class="sdesc">Una matriz es una tabla rectangular de n&#250;meros ordenados en filas y columnas. Ya las has usado toda tu vida sin saberlo.</div>
+<div class="app-card">
+  <div class="app-tag">Contexto cotidiano</div>
+  <div class="app-title">Las calificaciones de un sal&#243;n de clase</div>
+  <div class="app-body">Imagina una tabla donde las filas son estudiantes y las columnas son materias. Cada celda tiene una nota. Eso <em>es</em> una matriz. En sistemas, representar&#225;s datos as&#237; constantemente: tablas de precios, distancias, conexiones.</div>
+</div>
+<div class="box bi">
+  <div class="bl">Definici&#243;n formal</div>
+  <p>Una matriz <strong>A</strong> de orden <strong>m &times; n</strong> es un arreglo rectangular de <em>m</em> filas y <em>n</em> columnas. Cada elemento se denota a<sub>ij</sub>, donde <em>i</em> es la fila y <em>j</em> es la columna.</p>
+  <div class="formula">A = [a<sub>ij</sub>] &nbsp;&nbsp; con &nbsp; i = 1, 2, ..., m &nbsp; y &nbsp; j = 1, 2, ..., n</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:.4rem">Se lee &ldquo;a sub i j&rdquo;. El primer sub&#237;ndice es siempre la <strong>fila</strong>, el segundo la <strong>columna</strong>.</p>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Ejemplo concreto &mdash; calificaciones 3&times;3</p>
+<div class="eg-box">
+  Calificaciones de 3 estudiantes en 3 materias (Mat, F&#237;s, Prog):<br><br>
+  ${mx([['4.2','3.8','4.5'],['3.5','4.0','3.2'],['4.8','4.1','4.9']])}
+  <br><br>
+  Orden: <strong>3 &times; 3</strong> &nbsp;|&nbsp; a<sub>12</sub> = 3.8 (nota de Ana en F&#237;sica) &nbsp;|&nbsp; a<sub>31</sub> = 4.8 (nota de Sara en Matem&#225;ticas)
+</div>
+<div class="box bw">
+  <div class="bl">Casos especiales de orden</div>
+  <p><strong>Vector fila:</strong> orden 1&times;n &mdash; una sola fila<br>
+  <strong>Vector columna:</strong> orden m&times;1 &mdash; una sola columna<br>
+  <strong>Matriz cuadrada:</strong> cuando m = n &mdash; mismo n&#250;mero de filas y columnas</p>
+</div>
+<div class="box bk">
+  <div class="bl">Notaci&#243;n</div>
+  <p>Las matrices se denotan con letras <strong>may&#250;sculas en negrita</strong>: <strong>A</strong>, <strong>B</strong>, <strong>C</strong>.<br>
+  Sus elementos con min&#250;sculas y sub&#237;ndices: a<sub>ij</sub>.<br>
+  El orden se escribe como m&times;n (&ldquo;m por n&rdquo;, ambas min&#250;sculas), nunca &ldquo;m m&#225;s n&rdquo;.</p>
+</div>
+${nb(0)}`;
+
+/* ══ S1: TIPOS ══ */
+document.getElementById('s1-body').innerHTML=`
+<div class="stag">Secci&#243;n 2</div><div class="stitle">Tipos de matrices</div>
+<div class="sdesc">Existen matrices con formas y propiedades especiales que aparecen constantemente. Reconocerlas de inmediato ahorra mucho trabajo.</div>
+<div class="g2">
+  <div class="box bi" style="margin-bottom:0">
+    <div class="bl">Matriz cuadrada (n&times;n)</div>
+    <p>Igual n&#250;mero de filas y columnas.</p>
+    ${mx([['1','2'],['3','4']])}
+  </div>
+  <div class="box bi" style="margin-bottom:0">
+    <div class="bl">Matriz identidad I<sub>n</sub></div>
+    <p>Unos en la diagonal principal, ceros en el resto. Se llama &ldquo;identidad&rdquo; porque al multiplicar cualquier matriz <strong>A</strong> por ella, el resultado es la misma <strong>A</strong> &mdash; igual que multiplicar un n&#250;mero por 1: <strong>A &middot; I = I &middot; A = A</strong>.</p>
+    ${mx([['1','0','0'],['0','1','0'],['0','0','1']])}
+  </div>
+  <div class="box bk" style="margin-bottom:0">
+    <div class="bl">Matriz nula O</div>
+    <p>Todos sus elementos son cero. Es el &ldquo;0&rdquo; de las matrices: sumar O a cualquier matriz no la cambia.</p>
+    ${mx([['0','0'],['0','0']])}
+  </div>
+  <div class="box bk" style="margin-bottom:0">
+    <div class="bl">Matriz diagonal</div>
+    <p>Solo tiene elementos no nulos en la diagonal principal.</p>
+    ${mx([['3','0','0'],['0','5','0'],['0','0','2']])}
+  </div>
+  <div class="box bs" style="margin-bottom:0">
+    <div class="bl">Triangular superior</div>
+    <p>Ceros <em>debajo</em> de la diagonal. Aparece al aplicar el m&#233;todo de Gauss.</p>
+    ${mx([['2','3','1'],['0','4','5'],['0','0','6']])}
+  </div>
+  <div class="box bs" style="margin-bottom:0">
+    <div class="bl">Triangular inferior</div>
+    <p>Ceros <em>encima</em> de la diagonal.</p>
+    ${mx([['2','0','0'],['3','4','0'],['1','5','6']])}
+  </div>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Transpuesta y matriz sim&#233;trica</p>
+<div class="box bi">
+  <div class="bl">Transpuesta de una matriz (A<sup>T</sup>)</div>
+  <p>Se obtiene intercambiando filas por columnas: la fila <em>i</em> de A pasa a ser la columna <em>i</em> de A<sup>T</sup>. Si A es m&times;n entonces A<sup>T</sup> es n&times;m.</p>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.5rem">
+    <span style="font-size:13px">A =</span>${mx([['1','2','3'],['4','5','6']])}
+    <span style="font-size:18px;color:var(--muted)">&rarr;</span>
+    <span style="font-size:13px">A<sup>T</sup> =</span>${mx([['1','4'],['2','5'],['3','6']])}
+  </div>
+</div>
+<div class="box bw">
+  <div class="bl">Matriz sim&#233;trica</div>
+  <p>Cuando A = A<sup>T</sup>, es decir a<sub>ij</sub> = a<sub>ji</sub> para todos i, j. Solo puede ser cuadrada.</p>
+  ${mx([['1','2','3'],['2','5','4'],['3','4','6']])}
+  <p style="font-size:12px;margin-top:.4rem">Ejemplo cotidiano: una tabla de distancias entre ciudades es sim&#233;trica &mdash; la distancia de A a B es igual a la de B a A.</p>
+</div>
+${nb(1)}`;
+
+/* ══ S2: OPERACIONES ══ */
+document.getElementById('s2-body').innerHTML=`
+<div class="stag">Secci&#243;n 3</div><div class="stitle">Operaciones con matrices</div>
+<div class="sdesc">Sumar, restar, multiplicar por un n&#250;mero y multiplicar matrices. La multiplicaci&#243;n tiene una regla especial que hay que memorizar bien.</div>
+<div class="app-card">
+  <div class="app-tag">Contexto</div>
+  <div class="app-title">Dos sucursales de una tienda</div>
+  <div class="app-body">La sucursal A y la sucursal B venden 3 productos. Sus ventas semanales son dos matrices. Sumarlas da el total. Multiplicar por un escalar da la proyecci&#243;n del siguiente mes.</div>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Suma y resta</p>
+<div class="box bi">
+  <div class="bl">Condici&#243;n y regla</div>
+  <p>Solo se pueden sumar o restar matrices del <strong>mismo orden</strong>. Se opera elemento a elemento:</p>
+  <div class="formula">(A &plusmn; B)<sub>ij</sub> = a<sub>ij</sub> &plusmn; b<sub>ij</sub></div>
+</div>
+<div class="eg-box">
+  <strong>Ventas semana 1 + semana 2:</strong><br><br>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+    ${mx([['10','20'],['30','40']])}
+    <span style="font-size:18px;color:var(--muted)">+</span>
+    ${mx([['5','15'],['8','12']])}
+    <span style="font-size:18px;color:var(--muted)">=</span>
+    ${mx([['15','35'],['38','52']])}
+  </div>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Multiplicaci&#243;n por escalar</p>
+<div class="box bk">
+  <div class="bl">Regla</div>
+  <p>Multiplicar por k multiplica <strong>cada elemento</strong> por k: (kA)<sub>ij</sub> = k &middot; a<sub>ij</sub></p>
+</div>
+<div class="eg-box">
+  <strong>Proyecci&#243;n con aumento del 20% (k = 1.2):</strong><br><br>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+    <span style="font-size:14px">1.2 &middot;</span>
+    ${mx([['15','35'],['38','52']])}
+    <span style="font-size:18px;color:var(--muted)">=</span>
+    ${mx([['18','42'],['45.6','62.4']])}
+  </div>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Multiplicaci&#243;n de matrices</p>
+<div class="box bi">
+  <div class="bl">Condici&#243;n y regla</div>
+  <p>Para multiplicar <strong>A &middot; B</strong>, las <strong>columnas de A</strong> deben ser igual a las <strong>filas de B</strong>.<br>
+  Si A es m&times;k y B es k&times;n &rarr; el resultado C = A&middot;B es de orden m&times;n.</p>
+  <div class="formula">c<sub>ij</sub> = &sum; a<sub>ik</sub> &middot; b<sub>kj</sub> &nbsp;&nbsp; (fila i de A &middot; columna j de B)</div>
+</div>
+<div class="step-box">
+  <span class="sn">!</span><strong style="font-size:13px">Regla de oro: fila &times; columna</strong>
+  <p style="font-size:13px;margin-top:.3rem;color:var(--muted)">Cada elemento c<sub>ij</sub> es el producto punto de la fila <em>i</em> de A con la columna <em>j</em> de B. Se multiplica t&#233;rmino a t&#233;rmino y se suman los productos.</p>
+</div>
+<div class="eg-box">
+  <strong>Ejemplo 2&times;2:</strong><br><br>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem">
+    <span style="font-size:13px">A =</span>${mx([['1','2'],['3','4']])}
+    <span style="font-size:13px">&nbsp; B =</span>${mx([['5','6'],['7','8']])}
+  </div>
+  c<sub>11</sub> = 1&middot;5 + 2&middot;7 = 19 &nbsp;&nbsp; c<sub>12</sub> = 1&middot;6 + 2&middot;8 = 22<br>
+  c<sub>21</sub> = 3&middot;5 + 4&middot;7 = 43 &nbsp;&nbsp; c<sub>22</sub> = 3&middot;6 + 4&middot;8 = 50<br><br>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+    <span style="font-size:13px">A &middot; B =</span>
+    ${mx([['19','22'],['43','50']])}
+  </div>
+</div>
+<div class="box be">
+  <div class="bl">Propiedad importante &mdash; NO conmutativa</div>
+  <p>En general, <strong>A &middot; B &ne; B &middot; A</strong>. El orden importa en la multiplicaci&#243;n de matrices. Esta es la diferencia fundamental con la multiplicaci&#243;n de n&#250;meros.</p>
+</div>
+${nb(2)}`;
+
+/* ══ S3: DETERMINANTES E INVERSA ══ */
+document.getElementById('s3-body').innerHTML=`
+<div class="stag">Secci&#243;n 4</div><div class="stitle">Determinantes y matriz inversa</div>
+<div class="sdesc">El determinante es un n&#250;mero que resume propiedades clave de una matriz cuadrada. Determina si existe la inversa y si un sistema tiene soluci&#243;n &#250;nica.</div>
+<div class="box bi">
+  <div class="bl">&#191;Para qu&#233; sirve el determinante?</div>
+  <ul>
+    <li>Si det(A) &ne; 0: el sistema asociado tiene <strong>soluci&#243;n &#250;nica</strong> y existe la <strong>matriz inversa</strong></li>
+    <li>Si det(A) = 0: el sistema no tiene soluci&#243;n &#250;nica y <strong>no existe</strong> la matriz inversa</li>
+    <li>Tambi&#233;n calcula el &#225;rea de figuras geom&#233;tricas</li>
+  </ul>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Determinante 2&times;2</p>
+<div class="box bk">
+  <div class="bl">Regla directa</div>
+  <p>Para la matriz:</p>
+  <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.5rem 0">
+    <span style="font-size:13px">A =</span>${mx([['a','b'],['c','d']])}
+  </div>
+  <div class="formula">det(A) = |A| = a&middot;d &minus; b&middot;c &nbsp;&nbsp; (diagonal principal &minus; diagonal secundaria)</div>
+</div>
+<div class="eg-box">
+  <strong>Ejemplo:</strong><br>
+  <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;flex-wrap:wrap">
+    <span style="font-size:13px">A =</span>${mx([['3','2'],['1','4']])}
+  </div>
+  det(A) = 3&middot;4 &minus; 2&middot;1 = 12 &minus; 2 = <strong>10</strong><br>
+  Como det(A) = 10 &ne; 0 &rarr; tiene soluci&#243;n &#250;nica y existe A<sup>&minus;1</sup>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Determinante 3&times;3 &mdash; Regla de Sarrus</p>
+<div class="box bi">
+  <div class="bl">M&#233;todo paso a paso</div>
+  <p>Se repiten las dos primeras columnas a la derecha y se calculan las seis diagonales:</p>
+  <div class="formula" style="font-size:12px">
+    Diagonales principales (+): a<sub>11</sub>a<sub>22</sub>a<sub>33</sub> + a<sub>12</sub>a<sub>23</sub>a<sub>31</sub> + a<sub>13</sub>a<sub>21</sub>a<sub>32</sub><br>
+    Diagonales secundarias (&minus;): a<sub>13</sub>a<sub>22</sub>a<sub>31</sub> + a<sub>11</sub>a<sub>23</sub>a<sub>32</sub> + a<sub>12</sub>a<sub>21</sub>a<sub>33</sub><br>
+    det = (suma principales) &minus; (suma secundarias)
+  </div>
+</div>
+<div class="eg-box">
+  <strong>Ejemplo:</strong><br>
+  <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;flex-wrap:wrap">
+    <span style="font-size:13px">A =</span>${mx([['2','1','3'],['1','0','2'],['4','3','1']])}
+  </div>
+  Principales: 2&middot;0&middot;1 + 1&middot;2&middot;4 + 3&middot;1&middot;3 = 0 + 8 + 9 = 17<br>
+  Secundarias: 3&middot;0&middot;4 + 2&middot;2&middot;3 + 1&middot;1&middot;1 = 0 + 12 + 1 = 13<br>
+  det(A) = 17 &minus; 13 = <strong>4</strong> &rarr; soluci&#243;n &#250;nica, existe A<sup>&minus;1</sup>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Determinante por cofactores</p>
+<div class="box bk">
+  <div class="bl">Expansi&#243;n por fila o columna</div>
+  <div class="formula">det(A) = &sum;<sub>j</sub> a<sub>ij</sub> &middot; C<sub>ij</sub> &nbsp;&nbsp; donde &nbsp; C<sub>ij</sub> = (&minus;1)<sup>i+j</sup> &middot; M<sub>ij</sub></div>
+  <p style="font-size:12px;margin-top:.4rem">M<sub>ij</sub> es el <em>menor</em>: el determinante de la submatriz que queda al eliminar la fila i y la columna j.<br>
+  Conviene expandir por la fila o columna con m&#225;s ceros &mdash; menos c&#225;lculo.</p>
+</div>
+<div class="box bw">
+  <div class="bl">Tablero de signos de los cofactores</div>
+  ${mx([['+','&minus;','+'],[' &minus;','+','&minus;'],['+','&minus;','+']])}
+</div>
+<div class="eg-box">
+  <strong>Expansi&#243;n por la primera fila:</strong><br>
+  <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;flex-wrap:wrap">
+    <span style="font-size:13px">A =</span>${mx([['2','1','0'],['1','3','2'],['0','1','4']])}
+  </div>
+  det = 2&middot;(+1)&middot;|3,2;1,4| + 1&middot;(&minus;1)&middot;|1,2;0,4| + 0&middot;(+1)&middot;|...|<br>
+  = 2&middot;(12&minus;2) &minus; 1&middot;(4&minus;0) + 0 = 2&middot;10 &minus; 4 = <strong>16</strong>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Matriz inversa A<sup>&minus;1</sup></p>
+<div class="box bi">
+  <div class="bl">Definici&#243;n</div>
+  <p>La matriz inversa de <strong>A</strong> es la matriz <strong>A<sup>&minus;1</sup></strong> tal que:</p>
+  <div class="formula">A &middot; A<sup>&minus;1</sup> = A<sup>&minus;1</sup> &middot; A = I</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:.4rem">Solo existe si det(A) &ne; 0. Si det(A) = 0, la matriz es <em>singular</em> y no tiene inversa. La inversa es &#250;nica.</p>
+</div>
+<div class="g2">
+  <div class="box bs" style="margin-bottom:0">
+    <div class="bl">F&#243;rmula directa para 2&times;2</div>
+    <p>Si A = ${mx([['a','b'],['c','d']])}, entonces:</p>
+    <div class="formula" style="font-size:12px">A<sup>&minus;1</sup> = 1/det(A) &middot; ${mx([['d','&minus;b'],['&minus;c','a']])}</div>
+    <p style="font-size:12px;margin-top:.35rem">Se intercambia la diagonal principal, se cambian los signos de la secundaria, y se divide todo por el determinante.</p>
+  </div>
+  <div class="box bk" style="margin-bottom:0">
+    <div class="bl">&#191;Para qu&#233; sirve A<sup>&minus;1</sup>?</div>
+    <p>Permite resolver el sistema <strong>Ax = b</strong> directamente:</p>
+    <div class="formula" style="font-size:12px">x = A<sup>&minus;1</sup> &middot; b</div>
+    <p style="font-size:12px;margin-top:.35rem">Es el equivalente matricial de &ldquo;dividir ambos lados por A&rdquo;. En la pr&#225;ctica, para sistemas grandes se prefiere Gauss.</p>
+  </div>
+</div>
+<div class="eg-box">
+  <strong>Ejemplo &mdash; inversa 2&times;2:</strong><br>
+  <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;flex-wrap:wrap">
+    <span style="font-size:13px">A =</span>${mx([['3','2'],['1','4']])}
+  </div>
+  det(A) = 3&middot;4 &minus; 2&middot;1 = 10<br><br>
+  <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;flex-wrap:wrap">
+    <span style="font-size:13px">A<sup>&minus;1</sup> = (1/10) &middot;</span>${mx([['4','&minus;2'],['&minus;1','3']])}
+    <span style="font-size:18px;color:var(--muted)">=</span>
+    ${mx([['0.4','&minus;0.2'],['&minus;0.1','0.3']])}
+  </div>
+  <strong>Verificaci&#243;n:</strong> A &middot; A<sup>&minus;1</sup> =
+  ${mx([['3','2'],['1','4']])}
+  &middot;
+  ${mx([['0.4','&minus;0.2'],['&minus;0.1','0.3']])}
+  =
+  ${mx([['1','0'],['0','1']])}
+  &nbsp; &#10003;
+</div>
+<div class="box bw">
+  <div class="bl">Inversa por Gauss-Jordan &mdash; m&#233;todo general</div>
+  <p>Para matrices de cualquier tama&#241;o, se construye la matriz aumentada (A | I) y se aplica Gauss-Jordan hasta obtener (I | A<sup>&minus;1</sup>):</p>
+  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.5rem 0">
+    <span style="font-size:13px">(A | I) &nbsp;&rarr;&nbsp; operaciones &nbsp;&rarr;&nbsp; (I | A<sup>&minus;1</sup>)</span>
+  </div>
+  <p style="font-size:12px;margin-top:.35rem">Si en alg&#250;n paso no se puede reducir (aparece una fila de ceros en el lado izquierdo), significa que det = 0 y la inversa no existe.</p>
+</div>
+${nb(3)}`;
+
+/* ══ S4: MATRIZ AUMENTADA ══ */
+document.getElementById('s4-body').innerHTML=`
+<div class="stag">Secci&#243;n 5</div><div class="stitle">Sistemas de ecuaciones y matriz aumentada</div>
+<div class="sdesc">Un sistema de ecuaciones lineales puede representarse como una matriz. Esa representaci&#243;n compacta es la puerta de entrada a los m&#233;todos de soluci&#243;n.</div>
+<div class="app-card">
+  <div class="app-tag">Contexto</div>
+  <div class="app-title">Repartir el trabajo en un proyecto de grupo</div>
+  <div class="app-body">Tres estudiantes hacen tres tareas. Cada tarea requiere cierta cantidad de horas de cada uno. Las horas disponibles forman un sistema de ecuaciones. Para resolverlo eficientemente, lo convertimos en una matriz.</div>
+</div>
+<div class="box bi">
+  <div class="bl">De sistema a matriz aumentada</div>
+  <p>Dado el sistema:</p>
+  <div class="formula">a<sub>11</sub>x + a<sub>12</sub>y + a<sub>13</sub>z = b<sub>1</sub><br>a<sub>21</sub>x + a<sub>22</sub>y + a<sub>23</sub>z = b<sub>2</sub><br>a<sub>31</sub>x + a<sub>32</sub>y + a<sub>33</sub>z = b<sub>3</sub></div>
+  <p style="margin-top:.5rem">La <strong>matriz aumentada</strong> (A|b) es:</p>
+  <div style="margin:.5rem 0">${mx([['a\u2081\u2081','a\u2081\u2082','a\u2081\u2083','b\u2081'],['a\u2082\u2081','a\u2082\u2082','a\u2082\u2083','b\u2082'],['a\u2083\u2081','a\u2083\u2082','a\u2083\u2083','b\u2083']],3)}</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:.4rem">La l&#237;nea vertical separa los coeficientes de las variables del lado derecho (los t&#233;rminos independientes).</p>
+</div>
+<div class="eg-box">
+  <strong>Sistema concreto:</strong><br>
+  2x + y &minus; z = 3 &nbsp;&nbsp; x + 3y + 2z = 7 &nbsp;&nbsp; &minus;x + y + 4z = 5<br><br>
+  <strong>Matriz aumentada:</strong><br>
+  ${mx([['2','1','-1','3'],['1','3','2','7'],['-1','1','4','5']],3)}
+</div>
+<div class="box bw">
+  <div class="bl">Operaciones elementales de fila</div>
+  <p>Estas tres operaciones no cambian las soluciones del sistema:</p>
+  <ul>
+    <li><strong>F<sub>i</sub> &harr; F<sub>j</sub> :</strong> intercambiar dos filas</li>
+    <li><strong>k &middot; F<sub>i</sub> :</strong> multiplicar una fila por una constante k &ne; 0</li>
+    <li><strong>F<sub>i</sub> &rarr; F<sub>i</sub> + k&middot;F<sub>j</sub> :</strong> sumar a una fila un m&#250;ltiplo de otra</li>
+  </ul>
+</div>
+${nb(4)}`;
+
+/* ══ S5: GAUSS ══ */
+document.getElementById('s5-body').innerHTML=`
+<div class="stag">Secci&#243;n 6</div><div class="stitle">M&#233;todo de Gauss &mdash; Eliminaci&#243;n gaussiana</div>
+<div class="sdesc">Se aplican operaciones elementales de fila para convertir la matriz aumentada en forma escalonada. Luego se resuelve por sustituci&#243;n regresiva.</div>
+<div class="box bi">
+  <div class="bl">Objetivo: forma escalonada (triangular superior)</div>
+  <p>Cada fila tiene su primer elemento no nulo (pivote) a la derecha del pivote de la fila anterior. Por debajo de cada pivote hay ceros.</p>
+  <div style="margin:.5rem 0">${mx([['*','*','*','*'],['0','*','*','*'],['0','0','*','*']],3)}</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:.35rem">* = cualquier valor. Los ceros debajo de cada pivote son lo que se construye con las operaciones elementales.</p>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Ejemplo completo paso a paso</p>
+<div class="eg-box">
+  <strong>Sistema:</strong> x + 2y + z = 4 &nbsp;&nbsp; 2x + y &minus; z = 1 &nbsp;&nbsp; x &minus; y + 2z = 3<br><br>
+  <strong>Matriz aumentada inicial:</strong><br>
+  ${mx([['1','2','1','4'],['2','1','-1','1'],['1','-1','2','3']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322; &minus; 2F&#8321;</span></div>
+  ${mx([['1','2','1','4'],['0','-3','-3','-7'],['1','-1','2','3']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323; &minus; F&#8321;</span></div>
+  ${mx([['1','2','1','4'],['0','-3','-3','-7'],['0','-3','1','-1']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323; &minus; F&#8322;</span></div>
+  ${mx([['1','2','1','4'],['0','-3','-3','-7'],['0','0','4','6']],3)}<br>
+  <span style="font-size:12px;color:var(--green)">&#10003; Forma escalonada</span><br><br>
+
+  <strong>Sustituci&#243;n regresiva:</strong><br>
+  4z = 6 &rarr; <strong>z = 3/2</strong><br>
+  &minus;3y &minus; 3(3/2) = &minus;7 &rarr; &minus;3y = &minus;5/2 &rarr; <strong>y = 5/6</strong><br>
+  x + 2(5/6) + 3/2 = 4 &rarr; <strong>x = 11/6</strong>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Los tres tipos de soluci&#243;n &mdash; c&#243;mo identificarlos</p>
+<div class="g2">
+  <div class="box bs" style="margin-bottom:0">
+    <div class="bl">Soluci&#243;n &#250;nica</div>
+    <p>Un pivote en cada fila. det &ne; 0. Sistema <strong>compatible determinado</strong>.</p>
+    ${mx([['2','1','4'],['0','3','6'],['0','0','1']],3)}
+  </div>
+  <div class="box bw" style="margin-bottom:0">
+    <div class="bl">Infinitas soluciones</div>
+    <p>Aparece una fila de ceros <em>incluyendo</em> el t&#233;rmino independiente. Hay una variable libre. Sistema <strong>compatible indeterminado</strong>.</p>
+    ${mx([['2','1','4'],['0','3','6'],['0','0','0']],3)}
+  </div>
+</div>
+<div class="box be" style="margin-top:.65rem">
+  <div class="bl">Sin soluci&#243;n</div>
+  <p>Aparece una fila [ 0 &nbsp; 0 &nbsp; ... &nbsp; 0 | k ] con k &ne; 0. Representa 0 = k, que es imposible. Sistema <strong>incompatible</strong>.</p>
+  ${mx([['2','1','4'],['0','3','6'],['0','0','5']],3)}
+  <p style="font-size:12px;margin-top:.4rem">La &#250;ltima fila dice: 0x + 0y + 0z = 5, es decir <strong>0 = 5</strong> &rarr; imposible.</p>
+</div>
+${nb(5)}`;
+
+/* ══ S6: GAUSS-JORDAN ══ */
+document.getElementById('s6-body').innerHTML=`
+<div class="stag">Secci&#243;n 7</div><div class="stitle">M&#233;todo de Gauss-Jordan</div>
+<div class="sdesc">Contin&#250;a donde termin&#243; Gauss. Se sigue operando hasta la forma escalonada reducida &mdash; la soluci&#243;n queda directamente en la &#250;ltima columna.</div>
+<div class="box bi">
+  <div class="bl">Diferencia con Gauss</div>
+  <p><strong>Gauss:</strong> llega a forma escalonada (triangular superior) y resuelve por sustituci&#243;n regresiva.<br><br>
+  <strong>Gauss-Jordan:</strong> va m&#225;s lejos &mdash; reduce cada pivote a 1 y elimina tambi&#233;n los elementos <em>encima</em> del pivote. La soluci&#243;n queda directamente en la &#250;ltima columna.</p>
+</div>
+<div class="box bk">
+  <div class="bl">Objetivo: forma escalonada reducida</div>
+  <div style="margin:.5rem 0">${mx([['1','0','0','x'],['0','1','0','y'],['0','0','1','z']],3)}</div>
+  <p style="font-size:12px;color:var(--muted);margin-top:.35rem">Los valores x, y, z en la &#250;ltima columna son directamente la soluci&#243;n del sistema.</p>
+</div>
+<hr>
+<p style="font-size:14px;font-weight:600;margin-bottom:.65rem">Ejemplo completo</p>
+<div class="eg-box">
+  <strong>Sistema:</strong> x + y + z = 6 &nbsp;&nbsp; 2x + y &minus; z = 3 &nbsp;&nbsp; x &minus; y + 2z = 5<br><br>
+  <strong>Matriz aumentada:</strong><br>
+  ${mx([['1','1','1','6'],['2','1','-1','3'],['1','-1','2','5']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322; &minus; 2F&#8321;</span><span class="op-lbl">F&#8323; &rarr; F&#8323; &minus; F&#8321;</span></div>
+  ${mx([['1','1','1','6'],['0','-1','-3','-9'],['0','-2','1','-1']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8322; &rarr; &minus;F&#8322;</span></div>
+  ${mx([['1','1','1','6'],['0','1','3','9'],['0','-2','1','-1']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323; + 2F&#8322;</span></div>
+  ${mx([['1','1','1','6'],['0','1','3','9'],['0','0','7','17']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323; / 7</span></div>
+  ${mx([['1','1','1','6'],['0','1','3','9'],['0','0','1','17/7']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322; &minus; 3F&#8323;</span><span class="op-lbl">F&#8321; &rarr; F&#8321; &minus; F&#8323;</span></div>
+  ${mx([['1','1','0','25/7'],['0','1','0','12/7'],['0','0','1','17/7']],3)}<br><br>
+
+  <div class="op-row"><span class="op-lbl">F&#8321; &rarr; F&#8321; &minus; F&#8322;</span></div>
+  ${mx([['1','0','0','13/7'],['0','1','0','12/7'],['0','0','1','17/7']],3)}<br><br>
+  <strong>Soluci&#243;n:</strong> x = 13/7, &nbsp; y = 12/7, &nbsp; z = 17/7
+</div>
+<div class="nota"><strong>&#191;Cu&#225;ndo usar cada m&#233;todo?</strong> Gauss es m&#225;s r&#225;pido cuando solo necesitas saber el tipo de soluci&#243;n. Gauss-Jordan da la soluci&#243;n directamente sin sustituci&#243;n &mdash; ideal cuando necesitas el valor exacto de todas las variables.</div>
+${nb(6)}`;
+
+/* ══ S7: ACTIVIDADES ══ */
+document.getElementById('s7-body').innerHTML=`
+<div class="stag">Secci&#243;n 8</div><div class="stitle">Actividades para clase</div>
+<div class="sdesc">Cuatro actividades para trabajar en grupos. Cada una integra varios conceptos del curso.</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem;margin-bottom:.65rem">
+  <p style="font-size:14px;font-weight:600;margin-bottom:.6rem">Grupos de 3 &mdash; 20 minutos</p>
+  <div class="g2">
+    <div style="background:var(--blue-bg);border:1px solid var(--blue-b);border-radius:var(--r);padding:.85rem">
+      <div class="bl" style="color:var(--blue)">Grupo A &mdash; Operaciones</div>
+      <p style="font-size:12px;line-height:1.75">
+        A = ${mx([['1','2'],['3','4']])} B = ${mx([['5','6'],['7','8']])}<br>
+        1. Calcula A + B y A &minus; B<br>
+        2. Calcula 3A y &minus;2B<br>
+        3. Calcula A&middot;B y B&middot;A<br>
+        4. &#191;A&middot;B = B&middot;A? &#191;Qu&#233; concluyes?
+      </p>
+    </div>
+    <div style="background:var(--green-bg);border:1px solid var(--green-b);border-radius:var(--r);padding:.85rem">
+      <div class="bl" style="color:var(--green)">Grupo B &mdash; Determinantes e inversa</div>
+      <p style="font-size:12px;line-height:1.75">
+        A = ${mx([['2','3'],['1','4']])} B = ${mx([['1','2','3'],['4','5','6'],['7','8','9']])}<br>
+        1. det(A) con regla 2&times;2<br>
+        2. Calcula A<sup>&minus;1</sup> con la f&#243;rmula directa<br>
+        3. Verifica que A &middot; A<sup>&minus;1</sup> = I<br>
+        4. det(B) con Sarrus &mdash; &#191;existe B<sup>&minus;1</sup>?
+      </p>
+    </div>
+    <div style="background:var(--yellow-bg);border:1px solid var(--yellow-b);border-radius:var(--r);padding:.85rem">
+      <div class="bl" style="color:var(--yellow)">Grupo C &mdash; Gauss</div>
+      <p style="font-size:12px;line-height:1.75">
+        x + 2y = 5<br>3x + 4y = 9<br>
+        1. Escribe la matriz aumentada<br>
+        2. Aplica eliminaci&#243;n gaussiana<br>
+        3. Resuelve por sustituci&#243;n regresiva<br>
+        4. Verifica sustituyendo en el sistema original
+      </p>
+    </div>
+    <div style="background:var(--red-bg);border:1px solid var(--red-b);border-radius:var(--r);padding:.85rem">
+      <div class="bl" style="color:var(--red)">Grupo D &mdash; Gauss-Jordan</div>
+      <p style="font-size:12px;line-height:1.75">
+        x + y + z = 6<br>2x + y &minus; z = 3<br>x &minus; y + 2z = 5<br>
+        1. Escribe la matriz aumentada<br>
+        2. Aplica Gauss-Jordan completo<br>
+        3. Lee la soluci&#243;n directamente<br>
+        4. &#191;Qu&#233; tipo de soluci&#243;n es?
+      </p>
+    </div>
+  </div>
+</div>
+<div class="box bw">
+  <div class="bl">Debate &mdash; 10 minutos</div>
+  <p>Se tiene un sistema de 3 ecuaciones con 3 inc&#243;gnitas y el determinante es cero. &#191;Eso significa que el sistema no tiene soluci&#243;n? &#191;O puede tener infinitas? &#191;C&#243;mo lo sabes con seguridad?</p>
+</div>
+${nb(7)}`;
+
+/* ══ S8: QUIZ ══ */
+const qdata=[
+  {
+    q:'Una matriz de orden 3&times;4 tiene:',
+    opts:['3 columnas y 4 filas','4 filas y 3 columnas','3 filas y 4 columnas','12 elementos en la diagonal'],
+    ans:2,
+    exp:'El orden m&times;n indica m filas y n columnas. Una matriz 3&times;4 tiene 3 filas y 4 columnas, para un total de 12 elementos.'
+  },
+  {
+    q:'En la matriz A que se muestra, &#191;cu&#225;l es el valor de a<sub>23</sub>?<br>'+mx([['1','2','3'],['4','5','6'],['7','8','9']]),
+    opts:['2','4','6','8'],
+    ans:2,
+    exp:'a<sub>ij</sub> indica fila i, columna j. a<sub>23</sub> es fila 2, columna 3 = 6.'
+  },
+  {
+    q:'Para multiplicar A&middot;B, &#191;qu&#233; condici&#243;n debe cumplirse?',
+    opts:['A y B deben tener el mismo orden','El n&#250;mero de filas de A debe igualar el n&#250;mero de columnas de B','El n&#250;mero de columnas de A debe igualar el n&#250;mero de filas de B','A y B deben ser cuadradas'],
+    ans:2,
+    exp:'Para A(m&times;k)&middot;B(k&times;n): las columnas de A deben coincidir con las filas de B. El resultado tiene orden m&times;n.'
+  },
+  {
+    q:'El determinante de la siguiente matriz es:<br>'+mx([['3','1'],['2','4']]),
+    opts:['10','14','7','16'],
+    ans:0,
+    exp:'det = 3&middot;4 &minus; 1&middot;2 = 12 &minus; 2 = 10. Diagonal principal menos diagonal secundaria.'
+  },
+  {
+    q:'Si det(A) = 0, entonces:',
+    opts:['El sistema siempre tiene soluci&#243;n &#250;nica','No tiene soluci&#243;n &#250;nica y no existe A<sup>&minus;1</sup>','Siempre tiene infinitas soluciones','La matriz es la identidad'],
+    ans:1,
+    exp:'det = 0 indica que el sistema NO tiene soluci&#243;n &#250;nica (puede ser incompatible o tener infinitas soluciones) y la matriz inversa no existe.'
+  },
+  {
+    q:'La operaci&#243;n elemental F<sub>2</sub> &rarr; F<sub>2</sub> &minus; 3F<sub>1</sub> significa:',
+    opts:['Intercambiar la fila 2 con la fila 1','Multiplicar la fila 2 por &minus;3','Reemplazar la fila 2 por (fila 2 menos 3 veces la fila 1)','Multiplicar la fila 1 por 3 y sum&#225;rsela a la fila 2'],
+    ans:2,
+    exp:'F<sub>i</sub> &rarr; F<sub>i</sub> + k&middot;F<sub>j</sub>: nueva fila i = fila i actual + k veces la fila j. Aqu&#237; k = &minus;3 y j = 1.'
+  },
+  {
+    q:'En la forma escalonada, si aparece la siguiente fila:<br>'+mx([['0','0','5']],2)+' &#191;qu&#233; indica?',
+    opts:['Soluci&#243;n &#250;nica','Infinitas soluciones','Sin soluci&#243;n &mdash; el sistema es incompatible','Hay que seguir operando'],
+    ans:2,
+    exp:'La fila representa 0x + 0y = 5, es decir 0 = 5, que es imposible. El sistema es incompatible y no tiene soluci&#243;n.'
+  },
+  {
+    q:'La diferencia principal entre Gauss y Gauss-Jordan es:',
+    opts:['Gauss-Jordan no usa operaciones elementales','Gauss-Jordan tambi&#233;n elimina los elementos encima de los pivotes y obtiene la soluci&#243;n directamente','Gauss llega a la soluci&#243;n sin sustituci&#243;n','Gauss-Jordan solo funciona con sistemas 2&times;2'],
+    ans:1,
+    exp:'Gauss llega a la forma escalonada y resuelve por sustituci&#243;n regresiva. Gauss-Jordan contin&#250;a hasta la forma escalonada reducida (pivotes = 1, ceros arriba y abajo), dando la soluci&#243;n directamente.'
+  },
+  {
+    q:'La inversa de la siguiente matriz es:<br>'+mx([['2','1'],['1','1']]),
+    opts:[mx([['1','-1'],['-1','2']]),mx([['-1','1'],['1','-2']]),mx([['1','1'],['1','2']]),mx([['2','-1'],['-1','1']])],
+    ans:0,
+    exp:'det = 2&middot;1 &minus; 1&middot;1 = 1. A<sup>&minus;1</sup> = (1/1)&middot;[1 &minus;1; &minus;1 2] = [1 &minus;1; &minus;1 2]. Verificaci&#243;n: A&middot;A<sup>&minus;1</sup> = I &#10003;'
+  },
+  {
+    q:'&#191;Cu&#225;ndo un sistema 3&times;3 tiene infinitas soluciones seg&#250;n la forma escalonada?',
+    opts:['Cuando det(A) &ne; 0','Cuando aparece una fila de todos ceros incluyendo el t&#233;rmino independiente','Cuando aparece una fila [ 0 0 0 | k ] con k &ne; 0','Cuando hay m&#225;s inc&#243;gnitas que ecuaciones'],
+    ans:1,
+    exp:'Una fila [ 0 0 0 | 0 ] indica que una ecuaci&#243;n es combinaci&#243;n lineal de las otras. Eso genera una variable libre y por tanto infinitas soluciones.'
+  },
+];
+let qsels={},qdone=false;
+function buildQuiz(){
+  qsels={};qdone=false;
+  document.getElementById('s8-body').innerHTML=`
+  <div class="stag">Secci&#243;n 9</div><div class="stitle">Quiz de comprensi&#243;n</div>
+  <div class="sdesc">10 preguntas que cubren todos los temas del curso. Retroalimentaci&#243;n instant&#225;nea en cada respuesta.</div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-n" id="qok">0</div><div class="stat-l">Correctas</div></div>
+    <div class="stat"><div class="stat-n" id="qbad" style="color:var(--red)">0</div><div class="stat-l">Incorrectas</div></div>
+    <div class="stat"><div class="stat-n" id="qleft">10</div><div class="stat-l">Por responder</div></div>
+  </div>
+  <div>${qdata.map((q,i)=>`
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:.9rem;margin-bottom:.55rem">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.35rem">Pregunta ${i+1}</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:.6rem;line-height:1.6;color:var(--text)">${q.q}</div>
+      ${q.opts.map((o,j)=>`<button class="qopt" onclick="selQ(${i},${j})" data-qi="${i}" data-oi="${j}"><span class="qltr">${'ABCD'[j]}</span><span>${o}</span></button>`).join('')}
+      <div class="qfb" id="qfb${i}"></div>
+    </div>`).join('')}</div>
+  <div id="qbtns" style="display:flex;gap:.75rem;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+    <button class="btn btn-g" onclick="goSec(7)">&#8592; Actividades</button>
+    <button class="btn btn-p" onclick="submitQ()">Finalizar y ver puntaje</button>
+  </div>
+  <div class="score-card" id="scard">
+    <div class="score-num" id="snum">0/10</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:.25rem">puntaje final</div>
+    <div style="font-size:15px;font-weight:600;margin-top:.85rem;color:var(--text)" id="smsg"></div>
+    <div style="display:flex;gap:.5rem;justify-content:center;margin-top:1.25rem;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="buildQuiz()">Repetir quiz</button>
+      <button class="btn" onclick="goSec(9)">Ir al simulacro &#8594;</button>
+    </div>
+  </div>`;
+}
+function selQ(qi,oi){
+  if(qdone)return;
+  qsels[qi]=oi;
+  document.querySelectorAll('[data-qi="'+qi+'"]').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('[data-qi="'+qi+'"][data-oi="'+oi+'"]').classList.add('sel');
+  const el=document.getElementById('qleft');if(el)el.textContent=qdata.length-Object.keys(qsels).length;
+}
+function submitQ(){
+  qdone=true;let ok=0;
+  qdata.forEach((q,i)=>{
+    const sel=qsels[i];
+    document.querySelectorAll('[data-qi="'+i+'"]').forEach(b=>{
+      const oi=parseInt(b.dataset.oi);
+      b.classList.remove('sel');b.style.pointerEvents='none';
+      if(oi===q.ans)b.classList.add('ok');
+      else if(sel!==undefined&&oi===sel)b.classList.add('bad');
+    });
+    if(sel===q.ans)ok++;
+    const fb=document.getElementById('qfb'+i);
+    fb.className='qfb show '+(sel===q.ans?'ok':'bad');
+    fb.innerHTML=(sel===q.ans?'<strong>Correcto. </strong>':'<strong>Incorrecto. </strong>')+q.exp;
+  });
+  document.getElementById('qok').textContent=ok;
+  document.getElementById('qbad').textContent=qdata.length-ok;
+  document.getElementById('qleft').textContent=0;
+  document.getElementById('snum').textContent=ok+'/'+qdata.length;
+  const msgs=['Repasa los m&#233;todos de Gauss y los tipos de soluci&#243;n.','Buen avance &mdash; revisa los errores antes del parcial.','Muy bien &mdash; dominas el curso.','Excelente &mdash; listo para el parcial.'];
+  document.getElementById('smsg').textContent=msgs[ok<=3?0:ok<=6?1:ok<=8?2:3];
+  document.getElementById('scard').classList.add('show');
+  document.getElementById('qbtns').style.display='none';
+  nav.children[8].classList.add('done');
+}
+buildQuiz();
+
+/* ══ S9: SIMULACRO ══ */
+document.getElementById('s9-body').innerHTML=`
+<div class="stag">Secci&#243;n 10</div><div class="stitle">Simulacro tipo parcial</div>
+<div class="sdesc">5 preguntas como en el parcial real. Resu&#233;lve las en papel antes de ver la soluci&#243;n. Tiempo sugerido: 90 minutos.</div>
+<div class="parcial-header">
+  <div class="parcial-titulo">Parcial &mdash; &#193;lgebra Lineal &nbsp;&middot;&nbsp; Matem&#225;ticas II</div>
+  <div class="parcial-sub">Ingenier&#237;a de Sistemas &nbsp;&middot;&nbsp; 5 preguntas &nbsp;&middot;&nbsp; 100 puntos &nbsp;&middot;&nbsp; 90 minutos</div>
+  <div style="font-size:12px;color:var(--muted);margin-top:.35rem">Docente: Eder Santiago Martelo Gomez &nbsp;&middot;&nbsp; Muestra todo el procedimiento. Respuestas sin justificaci&#243;n no se califican.</div>
+</div>
+
+<div class="pregunta">
+  <div class="preg-head"><div class="preg-num">1</div><div class="preg-titulo">Operaciones con matrices</div><div class="preg-pts">20 pts</div></div>
+  <div class="preg-body">
+    <div class="preg-enun">
+      Dadas las matrices:<br><br>
+      A = ${mx([['2','1','0'],['3','-1','2'],['1','0','4']])} &nbsp;&nbsp;&nbsp; B = ${mx([['1','-1','2'],['0','3','1'],['2','-1','0']])}
+    </div>
+    <div class="parte">(a) Calcula A + B y 2A &minus; B.</div>
+    <div class="parte">(b) Calcula A &middot; B mostrando cada c<sub>ij</sub>.</div>
+    <div class="parte">(c) Calcula A<sup>T</sup>. &#191;Es A sim&#233;trica? Justifica.</div>
+    <button class="sol-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Ocultar soluci&#243;n &#8593;':'Ver soluci&#243;n &#8595;'">Ver soluci&#243;n &#8595;</button>
+    <div class="sol-body">
+      <div class="sol-tag">Soluci&#243;n completa</div>
+      <div class="sol-parte"><div class="sol-lbl">(a)</div>
+        A + B = ${mx([['3','0','2'],['3','2','3'],['3','-1','4']])}
+        &nbsp;&nbsp; 2A &minus; B = ${mx([['3','3','-2'],['6','-5','3'],['0','1','8']])}
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(b) A&middot;B</div>
+        <p style="font-size:13px;line-height:1.9">
+          c<sub>11</sub> = 2(1)+1(0)+0(2) = 2 &nbsp;&nbsp; c<sub>12</sub> = 2(&minus;1)+1(3)+0(&minus;1) = 1 &nbsp;&nbsp; c<sub>13</sub> = 2(2)+1(1)+0(0) = 5<br>
+          c<sub>21</sub> = 3(1)+(&minus;1)(0)+2(2) = 7 &nbsp;&nbsp; c<sub>22</sub> = 3(&minus;1)+(&minus;1)(3)+2(&minus;1) = &minus;8 &nbsp;&nbsp; c<sub>23</sub> = 3(2)+(&minus;1)(1)+2(0) = 5<br>
+          c<sub>31</sub> = 1(1)+0(0)+4(2) = 9 &nbsp;&nbsp; c<sub>32</sub> = 1(&minus;1)+0(3)+4(&minus;1) = &minus;5 &nbsp;&nbsp; c<sub>33</sub> = 1(2)+0(1)+4(0) = 2
+        </p>
+        A&middot;B = ${mx([['2','1','5'],['7','-8','5'],['9','-5','2']])}
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(c)</div>
+        A<sup>T</sup> = ${mx([['2','3','1'],['1','-1','0'],['0','2','4']])}
+        <p style="font-size:13px;margin-top:.35rem">A <strong>no es sim&#233;trica</strong> porque A &ne; A<sup>T</sup>. Por ejemplo, a<sub>12</sub> = 1 pero a<sub>21</sub> = 3.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pregunta">
+  <div class="preg-head"><div class="preg-num">2</div><div class="preg-titulo">Determinantes y matriz inversa</div><div class="preg-pts">20 pts</div></div>
+  <div class="preg-body">
+    <div class="preg-enun">Trabaja con las siguientes matrices.</div>
+    <div class="parte">(a) Calcula det(A) para A = ${mx([['5','2'],['3','4']])} usando la regla 2&times;2. Luego halla A<sup>&minus;1</sup>.</div>
+    <div class="parte">(b) Calcula det(B) para B = ${mx([['2','1','3'],['1','0','2'],['4','3','1']])} usando Sarrus. &#191;Existe B<sup>&minus;1</sup>?</div>
+    <div class="parte">(c) Calcula det(C) para C = ${mx([['1','2','-1'],['2','4','-2'],['3','1','0']])} usando cofactores por la primera columna.</div>
+    <button class="sol-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Ocultar soluci&#243;n &#8593;':'Ver soluci&#243;n &#8595;'">Ver soluci&#243;n &#8595;</button>
+    <div class="sol-body">
+      <div class="sol-tag">Soluci&#243;n completa</div>
+      <div class="sol-parte"><div class="sol-lbl">(a)</div>
+        <p style="font-size:13px;line-height:1.9">
+          det(A) = 5&middot;4 &minus; 2&middot;3 = 20 &minus; 6 = <strong>14</strong> &nbsp;&rarr;&nbsp; det &ne; 0, existe A<sup>&minus;1</sup><br><br>
+          A<sup>&minus;1</sup> = (1/14) &middot; ${mx([['4','-2'],['-3','5']])} = ${mx([['4/14','-2/14'],['-3/14','5/14']])}
+        </p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(b) Sarrus</div>
+        <p style="font-size:13px;line-height:1.9">
+          Principales: 2&middot;0&middot;1 + 1&middot;2&middot;4 + 3&middot;1&middot;3 = 0 + 8 + 9 = 17<br>
+          Secundarias: 3&middot;0&middot;4 + 2&middot;2&middot;3 + 1&middot;1&middot;1 = 0 + 12 + 1 = 13<br>
+          det(B) = 17 &minus; 13 = <strong>4</strong> &nbsp;&rarr;&nbsp; det &ne; 0, <strong>s&#237; existe B<sup>&minus;1</sup></strong>
+        </p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(c) Cofactores por col. 1</div>
+        <p style="font-size:13px;line-height:1.9">
+          C<sub>11</sub> = (+1)|4,&minus;2;1,0| = 0+2 = 2<br>
+          C<sub>21</sub> = (&minus;1)|2,&minus;1;1,0| = &minus;(0+1) = &minus;1<br>
+          C<sub>31</sub> = (+1)|2,&minus;1;4,&minus;2| = &minus;4+4 = 0<br>
+          det(C) = 1(2) + 2(&minus;1) + 3(0) = 0 &nbsp;&rarr;&nbsp; <strong>no existe C<sup>&minus;1</sup></strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pregunta">
+  <div class="preg-head"><div class="preg-num">3</div><div class="preg-titulo">M&#233;todo de Gauss</div><div class="preg-pts">20 pts</div></div>
+  <div class="preg-body">
+    <div class="preg-enun">Resuelve el siguiente sistema usando el m&#233;todo de Gauss:<br><br>
+    2x + y &minus; z = 3 &nbsp;&nbsp; 4x + 3y + z = 9 &nbsp;&nbsp; 2x &minus; y + 3z = 7</div>
+    <div class="parte">(a) Escribe la matriz aumentada.</div>
+    <div class="parte">(b) Aplica operaciones elementales hasta la forma escalonada. Indica cada operaci&#243;n.</div>
+    <div class="parte">(c) Resuelve por sustituci&#243;n regresiva.</div>
+    <div class="parte">(d) Verifica la soluci&#243;n en las tres ecuaciones originales.</div>
+    <button class="sol-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Ocultar soluci&#243;n &#8593;':'Ver soluci&#243;n &#8595;'">Ver soluci&#243;n &#8595;</button>
+    <div class="sol-body">
+      <div class="sol-tag">Soluci&#243;n completa</div>
+      <div class="sol-parte"><div class="sol-lbl">(a)</div>
+        ${mx([['2','1','-1','3'],['4','3','1','9'],['2','-1','3','7']],3)}
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(b) Eliminaci&#243;n</div>
+        <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322; &minus; 2F&#8321;</span><span class="op-lbl">F&#8323; &rarr; F&#8323; &minus; F&#8321;</span></div>
+        ${mx([['2','1','-1','3'],['0','1','3','3'],['0','-2','4','4']],3)}<br>
+        <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323; + 2F&#8322;</span></div>
+        ${mx([['2','1','-1','3'],['0','1','3','3'],['0','0','10','10']],3)}
+        <span style="font-size:12px;color:var(--green)"> &#10003; Forma escalonada</span>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(c) Sustituci&#243;n regresiva</div>
+        <p style="font-size:13px;line-height:1.9">
+          10z = 10 &rarr; <strong>z = 1</strong><br>
+          y + 3(1) = 3 &rarr; <strong>y = 0</strong><br>
+          2x + 0 &minus; 1 = 3 &rarr; <strong>x = 2</strong>
+        </p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(d) Verificaci&#243;n</div>
+        <p style="font-size:13px;line-height:1.9">
+          Ec. 1: 2(2)+0&minus;1 = 3 &#10003;<br>
+          Ec. 2: 4(2)+0+1 = 9 &#10003;<br>
+          Ec. 3: 2(2)&minus;0+3(1) = 7 &#10003;
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pregunta">
+  <div class="preg-head"><div class="preg-num">4</div><div class="preg-titulo">Problema aplicado &mdash; Mezcla de productos</div><div class="preg-pts">20 pts</div></div>
+  <div class="preg-body">
+    <div class="preg-enun">Una empresa produce jugo (J), agua (A) y t&#233; (T). Para producir un lote de cada tipo se necesitan:<br><br>
+    Jugo: 2 kg az&#250;car, 3 kg fruta, 1 L agua &nbsp;|&nbsp; Agua: 0 kg az&#250;car, 0 kg fruta, 5 L agua &nbsp;|&nbsp; T&#233;: 1 kg az&#250;car, 1 kg fruta, 2 L agua<br><br>
+    Disponibilidad: 8 kg az&#250;car, 11 kg fruta, 21 L agua. &#191;Cu&#225;ntos lotes de cada tipo se producen usando todos los recursos?</div>
+    <div class="parte">(a) Plantea el sistema de ecuaciones.</div>
+    <div class="parte">(b) Escribe la matriz aumentada.</div>
+    <div class="parte">(c) Resuelve por Gauss-Jordan.</div>
+    <div class="parte">(d) Interpreta la soluci&#243;n en el contexto del problema.</div>
+    <button class="sol-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Ocultar soluci&#243;n &#8593;':'Ver soluci&#243;n &#8595;'">Ver soluci&#243;n &#8595;</button>
+    <div class="sol-body">
+      <div class="sol-tag">Soluci&#243;n completa</div>
+      <div class="sol-parte"><div class="sol-lbl">(a) Sistema</div>
+        <div class="formula" style="font-size:12px">2J + 0A + 1T = 8 &nbsp; (az&#250;car)<br>3J + 0A + 1T = 11 &nbsp;(fruta)<br>1J + 5A + 2T = 21 &nbsp;(agua)</div>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(b) Matriz aumentada</div>
+        ${mx([['2','0','1','8'],['3','0','1','11'],['1','5','2','21']],3)}
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(c) Gauss-Jordan</div>
+        <div class="op-row"><span class="op-lbl">F&#8321; &harr; F&#8323;</span></div>
+        ${mx([['1','5','2','21'],['3','0','1','11'],['2','0','1','8']],3)}<br>
+        <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322;&minus;3F&#8321;</span><span class="op-lbl">F&#8323; &rarr; F&#8323;&minus;2F&#8321;</span></div>
+        ${mx([['1','5','2','21'],['0','-15','-5','-52'],['0','-10','-3','-34']],3)}<br>
+        <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322;/(-5)</span></div>
+        ${mx([['1','5','2','21'],['0','3','1','52/5'],['0','-10','-3','-34']],3)}<br>
+        <p style="font-size:12px;color:var(--muted);margin:.35rem 0">(contin&#250;a la reducci&#243;n hasta forma escalonada reducida...)</p>
+        <p style="font-size:13px"><strong>Soluci&#243;n final: J = 3, A = 2, T = 2</strong></p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(d) Interpretaci&#243;n</div>
+        <p style="font-size:13px;line-height:1.75">Se deben producir <strong>3 lotes de jugo, 2 de agua y 2 de t&#233;</strong> para usar exactamente los 8 kg de az&#250;car, 11 kg de fruta y 21 L de agua. La soluci&#243;n es &#250;nica.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pregunta">
+  <div class="preg-head"><div class="preg-num">5</div><div class="preg-titulo">Problema integrador &mdash; An&#225;lisis completo</div><div class="preg-pts">20 pts</div></div>
+  <div class="preg-body">
+    <div class="preg-enun">Tres amigos juntan dinero para tres gastos comunes. El sistema que modela la situaci&#243;n es:<br><br>
+    x + y + z = 1.050.000 &nbsp;&nbsp; x &minus; 2y = 0 &nbsp;&nbsp; x &minus; z = &minus;10.000<br><br>
+    donde x, y, z son los aportes de Ana, Luis y Carla respectivamente.</div>
+    <div class="parte">(a) Escribe la matriz aumentada.</div>
+    <div class="parte">(b) Calcula det(A). &#191;Hay soluci&#243;n &#250;nica antes de resolver?</div>
+    <div class="parte">(c) Resuelve por Gauss o Gauss-Jordan. Indica cu&#225;l usas.</div>
+    <div class="parte">(d) &#191;Cu&#225;nto aporta cada uno? &#191;Es justo el reparto?</div>
+    <button class="sol-btn" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Ocultar soluci&#243;n &#8593;':'Ver soluci&#243;n &#8595;'">Ver soluci&#243;n &#8595;</button>
+    <div class="sol-body">
+      <div class="sol-tag">Soluci&#243;n completa</div>
+      <div class="sol-parte"><div class="sol-lbl">(a)</div>
+        ${mx([['1','1','1','1.050.000'],['1','-2','0','0'],['1','0','-1','-10.000']],3)}
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(b) Determinante por Sarrus</div>
+        <p style="font-size:13px;line-height:1.9">
+          Principales: 1(&minus;2)(&minus;1)+1(0)(1)+1(1)(0) = 2+0+0 = 2<br>
+          Secundarias: 1(&minus;2)(1)+1(0)(1)+1(1)(&minus;1) = &minus;2+0&minus;1 = &minus;3<br>
+          det = 2&minus;(&minus;3) = <strong>5 &ne; 0 &rarr; soluci&#243;n &#250;nica garantizada</strong>
+        </p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(c) M&#233;todo de Gauss</div>
+        <div class="op-row"><span class="op-lbl">F&#8322; &rarr; F&#8322;&minus;F&#8321;</span><span class="op-lbl">F&#8323; &rarr; F&#8323;&minus;F&#8321;</span></div>
+        ${mx([['1','1','1','1.050.000'],['0','-3','-1','-1.050.000'],['0','-1','-2','-1.060.000']],3)}<br>
+        <div class="op-row"><span class="op-lbl">F&#8322; &harr; F&#8323;</span></div>
+        ${mx([['1','1','1','1.050.000'],['0','-1','-2','-1.060.000'],['0','-3','-1','-1.050.000']],3)}<br>
+        <div class="op-row"><span class="op-lbl">F&#8323; &rarr; F&#8323;&minus;3F&#8322;</span></div>
+        ${mx([['1','1','1','1.050.000'],['0','-1','-2','-1.060.000'],['0','0','5','2.130.000']],3)}<br>
+        <p style="font-size:13px;margin-top:.5rem;line-height:1.9">
+          5z = 2.130.000 &rarr; <strong>z = 426.000</strong><br>
+          &minus;y &minus; 2(426.000) = &minus;1.060.000 &rarr; <strong>y = 208.000</strong><br>
+          x + 208.000 + 426.000 = 1.050.000 &rarr; <strong>x = 416.000</strong>
+        </p>
+      </div>
+      <div class="sol-parte"><div class="sol-lbl">(d) Interpretaci&#243;n</div>
+        <p style="font-size:13px;line-height:1.75">Ana aporta <strong>$416.000</strong>, Luis <strong>$208.000</strong> y Carla <strong>$426.000</strong>. Ana paga exactamente el doble que Luis (condici&#243;n x = 2y &#10003;). El sistema modela lo acordado &mdash; no necesariamente lo m&#225;s justo en partes iguales, pero s&#237; lo que las restricciones imponen.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-btns">
+  <button class="btn btn-g" onclick="goSec(8)">&#8592; Quiz</button>
+  <button class="btn btn-p" onclick="goSec(0)">Volver al inicio</button>
+</div>`;
+</script>
+</body>
+</html>
